@@ -19,6 +19,12 @@ interface MainContract {
 
         fun requestVerifyCallout()
 
+        fun returnRegistration(registrationId: String)
+
+        fun returnIdentification(idList: String, confidenceList: String, tierList: String)
+
+        fun returnVerification(id: String, confidence: String, tier: String)
+
     }
 
     interface Presenter : BasePresenter {

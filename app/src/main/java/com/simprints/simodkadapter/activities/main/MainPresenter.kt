@@ -3,6 +3,9 @@ package com.simprints.simodkadapter.activities.main
 import com.simprints.libsimprints.Identification
 import com.simprints.libsimprints.Registration
 import com.simprints.libsimprints.Verification
+import com.simprints.simodkadapter.extensions.getConfidencesString
+import com.simprints.simodkadapter.extensions.getIdsString
+import com.simprints.simodkadapter.extensions.getTiersString
 
 
 class MainPresenter(private val view: MainContract.View,
@@ -22,20 +25,22 @@ class MainPresenter(private val view: MainContract.View,
         else -> view.returnActionErrorToClient()
     }
 
-    override fun processRegistration(registration: Registration) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun processRegistration(registration: Registration) =
+            view.returnRegistration(registration.guid)
 
-    override fun processIdentification(identifications: ArrayList<Identification>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun processIdentification(identifications: ArrayList<Identification>) =
+            view.returnIdentification(
+                    identifications.getIdsString(),
+                    identifications.getConfidencesString(),
+                    identifications.getTiersString()
+            )
 
-    override fun processVerification(verification: Verification) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun processVerification(verification: Verification) = view.returnVerification(
+            verification.guid,
+            verification.confidence.toString(),
+            verification.tier.toString()
+    )
 
-    override fun processReturnError() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun processReturnError() = view.returnActionErrorToClient()
 
 }

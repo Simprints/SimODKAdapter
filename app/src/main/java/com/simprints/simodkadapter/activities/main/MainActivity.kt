@@ -13,6 +13,11 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         private const val REGISTER_REQUEST_CODE = 97
         private const val IDENTIFY_REQUEST_CODE = 98
         private const val VERIFY_REQUEST_CODE = 99
+
+        private const val ODK_REGISTRATION_ID_KEY = "odk-registration-id"
+        private const val ODK_GUIDS_KEY = "odk-guids"
+        private const val ODK_CONFIDENCES_KEY = "odk-confidences"
+        private const val ODK_TIERS_KEY = "odk-tiers"
     }
 
     override lateinit var presenter: MainContract.Presenter
@@ -50,11 +55,43 @@ class MainActivity : AppCompatActivity(), MainContract.View {
             setResult(resultCode, data).let { finish() }
         else
             when (requestCode) {
-                REGISTER_REQUEST_CODE -> presenter.processRegistration(data.getParcelableExtra(SIMPRINTS_REGISTRATION))
-                IDENTIFY_REQUEST_CODE -> presenter.processIdentification(data.getParcelableArrayListExtra<Identification>(SIMPRINTS_IDENTIFICATIONS))
-                VERIFY_REQUEST_CODE -> presenter.processVerification(data.getParcelableExtra(SIMPRINTS_VERIFICATION))
+                REGISTER_REQUEST_CODE -> presenter.processRegistration(
+                        data.getParcelableExtra(SIMPRINTS_REGISTRATION)
+                )
+                IDENTIFY_REQUEST_CODE -> presenter.processIdentification(
+                        data.getParcelableArrayListExtra<Identification>(SIMPRINTS_IDENTIFICATIONS)
+                )
+                VERIFY_REQUEST_CODE -> presenter.processVerification(
+                        data.getParcelableExtra(SIMPRINTS_VERIFICATION)
+                )
                 else -> presenter.processReturnError()
             }
+    }
+
+    override fun returnRegistration(registrationId: String) = Intent().let {
+        it.putExtra(ODK_REGISTRATION_ID_KEY, registrationId)
+        sendOkResult(it)
+    }
+
+    override fun returnIdentification(idList: String, confidenceList: String, tierList: String) =
+            Intent().let {
+                it.putExtra(ODK_GUIDS_KEY, idList)
+                it.putExtra(ODK_CONFIDENCES_KEY, confidenceList)
+                it.putExtra(ODK_TIERS_KEY, tierList)
+                sendOkResult(it)
+            }
+
+    override fun returnVerification(id: String, confidence: String, tier: String) =
+            Intent().let {
+                it.putExtra(ODK_GUIDS_KEY, id)
+                it.putExtra(ODK_CONFIDENCES_KEY, confidence)
+                it.putExtra(ODK_TIERS_KEY, tier)
+                sendOkResult(it)
+            }
+
+    private fun sendOkResult(intent: Intent) {
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
 }
