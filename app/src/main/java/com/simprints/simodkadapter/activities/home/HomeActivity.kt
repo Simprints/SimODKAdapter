@@ -3,6 +3,7 @@ package com.simprints.simodkadapter.activities.home
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.simprints.simodkadapter.R
+import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity(), HomeContract.View {
 
@@ -11,6 +12,8 @@ class HomeActivity : AppCompatActivity(), HomeContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        home_imageView_heart.animate().start()
 
         presenter = HomePresenter(this).apply { start() }
     }

@@ -6,12 +6,9 @@ import com.simprints.simodkadapter.BaseView
 
 interface HomeContract {
 
-    interface View : BaseView<Presenter> {
+    interface View : BaseView<Presenter>
 
-    }
+    interface Presenter : BasePresenter
 
-    interface Presenter : BasePresenter {
-
-    }
 }
 
