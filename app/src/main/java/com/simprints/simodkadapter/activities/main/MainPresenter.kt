@@ -13,9 +13,9 @@ class MainPresenter(private val view: MainContract.View,
 
     companion object {
         private const val PACKAGE_NAME = "com.simprints.simodkadapter"
-        private const val ACTION_REGISTER = "$PACKAGE_NAME.REGISTER"
-        private const val ACTION_IDENTIFY = "$PACKAGE_NAME.IDENTIFY"
-        private const val ACTION_VERIFY = "$PACKAGE_NAME.VERIFY"
+        const val ACTION_REGISTER = "$PACKAGE_NAME.REGISTER"
+        const val ACTION_IDENTIFY = "$PACKAGE_NAME.IDENTIFY"
+        const val ACTION_VERIFY = "$PACKAGE_NAME.VERIFY"
     }
 
     override fun start() = when (action) {
