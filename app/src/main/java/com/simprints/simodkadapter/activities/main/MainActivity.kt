@@ -39,13 +39,13 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     }
 
     override fun requestIdentifyCallout() {
-        val registerIntent = Intent(SIMPRINTS_IDENTIFY_INTENT).apply { putExtras(intent) }
-        startActivityForResult(registerIntent, IDENTIFY_REQUEST_CODE)
+        val identifyIntent = Intent(SIMPRINTS_IDENTIFY_INTENT).apply { putExtras(intent) }
+        startActivityForResult(identifyIntent, IDENTIFY_REQUEST_CODE)
     }
 
     override fun requestVerifyCallout() {
-        val registerIntent = Intent(SIMPRINTS_VERIFY_INTENT).apply { putExtras(intent) }
-        startActivityForResult(registerIntent, VERIFY_REQUEST_CODE)
+        val verifyIntent = Intent(SIMPRINTS_VERIFY_INTENT).apply { putExtras(intent) }
+        startActivityForResult(verifyIntent, VERIFY_REQUEST_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
