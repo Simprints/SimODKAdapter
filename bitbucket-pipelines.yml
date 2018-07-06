@@ -10,4 +10,5 @@ pipelines:
     - step:
         script:
           - ./build.sh
+          - ./gradlew test
 
