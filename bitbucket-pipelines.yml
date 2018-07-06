@@ -13,6 +13,7 @@ pipelines:
           - android-sdk
         script:
           - ./build.sh
+          - ./gradlew assembleDebug
           - ./gradlew :app:testDebugUnitTest
 
 definitions:
