@@ -17,4 +17,4 @@ pipelines:
 
 definitions:
   caches:
-    android-sdk: android-sdk-linux
+    android-sdk: android-sdk
