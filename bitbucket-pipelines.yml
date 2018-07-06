@@ -8,10 +8,13 @@ image: uber/android-build-environment:latest
 pipelines:
   default:
     - step:
-      caches:
+        caches:
           - gradle
           - android-sdk
         script:
           - ./build.sh
           - ./gradlew :app:testDebugUnitTest
 
+definitions:
+  caches:
+    android-sdk: android-sdk-linux
