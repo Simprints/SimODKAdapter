@@ -18,7 +18,7 @@ import java.util.*
 
 @RunWith(MockitoJUnitRunner::class)
 class MainPresenterTest {
-
+    
     @Mock
     private val view: MainContract.View = MainActivity()
 
