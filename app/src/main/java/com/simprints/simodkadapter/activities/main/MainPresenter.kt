@@ -28,11 +28,12 @@ class MainPresenter(private val view: MainContract.View,
     override fun processRegistration(registration: Registration) =
             view.returnRegistration(registration.guid)
 
-    override fun processIdentification(identifications: ArrayList<Identification>) =
+    override fun processIdentification(identifications: ArrayList<Identification>, sessionId: String) =
             view.returnIdentification(
                     identifications.getIdsString(),
                     identifications.getConfidencesString(),
-                    identifications.getTiersString()
+                    identifications.getTiersString(),
+                    sessionId
             )
 
     override fun processVerification(verification: Verification) = view.returnVerification(

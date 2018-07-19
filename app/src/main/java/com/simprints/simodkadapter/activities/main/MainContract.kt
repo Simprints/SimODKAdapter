@@ -21,7 +21,7 @@ interface MainContract {
 
         fun returnRegistration(registrationId: String)
 
-        fun returnIdentification(idList: String, confidenceList: String, tierList: String)
+        fun returnIdentification(idList: String, confidenceList: String, tierList: String, sessionId: String)
 
         fun returnVerification(id: String, confidence: String, tier: String)
 
@@ -31,7 +31,7 @@ interface MainContract {
 
         fun processRegistration(registration: Registration)
 
-        fun processIdentification(identifications: ArrayList<Identification>)
+        fun processIdentification(identifications: ArrayList<Identification>, sessionId: String)
 
         fun processVerification(verification: Verification)
 

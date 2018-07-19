@@ -18,7 +18,7 @@ import java.util.*
 
 @RunWith(MockitoJUnitRunner::class)
 class MainPresenterTest {
-    
+
     @Mock
     private val view: MainContract.View = MainActivity()
 
@@ -58,12 +58,14 @@ class MainPresenterTest {
     fun processIdentification_ShouldReturnValidOdkIdentification() {
         val id1 = Identification(UUID.randomUUID().toString(), 100, Tier.TIER_1)
         val id2 = Identification(UUID.randomUUID().toString(), 15, Tier.TIER_5)
+        val sessionId = UUID.randomUUID().toString()
 
-        MainPresenter(view, ACTION_IDENTIFY).processIdentification(arrayListOf(id1, id2))
+        MainPresenter(view, ACTION_IDENTIFY).processIdentification(arrayListOf(id1, id2), sessionId)
         Mockito.verify(view, times(1)).returnIdentification(
                 idList = "${id1.guid} ${id2.guid}",
                 confidenceList = "${id1.confidence} ${id2.confidence}",
-                tierList = "${id1.tier} ${id2.tier}"
+                tierList = "${id1.tier} ${id2.tier}",
+                sessionId = sessionId
         )
     }
 
@@ -80,7 +82,7 @@ class MainPresenterTest {
     }
 
     @Test
-    fun processReturnError_ShouldCallActionError(){
+    fun processReturnError_ShouldCallActionError() {
         MainPresenter(view, "").processReturnError()
         Mockito.verify(view, times(1)).returnActionErrorToClient()
     }

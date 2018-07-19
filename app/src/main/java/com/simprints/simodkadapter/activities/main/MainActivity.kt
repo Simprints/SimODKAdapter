@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         private const val ODK_GUIDS_KEY = "odk-guids"
         private const val ODK_CONFIDENCES_KEY = "odk-confidences"
         private const val ODK_TIERS_KEY = "odk-tiers"
+        private const val ODK_SESSION_ID = "odk-session-id"
     }
 
     override lateinit var presenter: MainContract.Presenter
@@ -59,7 +60,8 @@ class MainActivity : AppCompatActivity(), MainContract.View {
                         data.getParcelableExtra(SIMPRINTS_REGISTRATION)
                 )
                 IDENTIFY_REQUEST_CODE -> presenter.processIdentification(
-                        data.getParcelableArrayListExtra<Identification>(SIMPRINTS_IDENTIFICATIONS)
+                        data.getParcelableArrayListExtra<Identification>(SIMPRINTS_IDENTIFICATIONS),
+                        data.getStringExtra(SIMPRINTS_SESSION_ID)
                 )
                 VERIFY_REQUEST_CODE -> presenter.processVerification(
                         data.getParcelableExtra(SIMPRINTS_VERIFICATION)
@@ -73,11 +75,12 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         sendOkResult(it)
     }
 
-    override fun returnIdentification(idList: String, confidenceList: String, tierList: String) =
+    override fun returnIdentification(idList: String, confidenceList: String, tierList: String, sessionId: String) =
             Intent().let {
                 it.putExtra(ODK_GUIDS_KEY, idList)
                 it.putExtra(ODK_CONFIDENCES_KEY, confidenceList)
                 it.putExtra(ODK_TIERS_KEY, tierList)
+                it.putExtra(ODK_SESSION_ID, sessionId)
                 sendOkResult(it)
             }
 
