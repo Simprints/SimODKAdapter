@@ -49,6 +49,10 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         startActivityForResult(verifyIntent, VERIFY_REQUEST_CODE)
     }
 
+    override fun requestConfirmIdentityCallout() {
+        startService(Intent(SIMPRINTS_SELECT_GUID_INTENT).apply { putExtras(intent) })
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 

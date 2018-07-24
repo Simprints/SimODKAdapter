@@ -16,12 +16,14 @@ class MainPresenter(private val view: MainContract.View,
         const val ACTION_REGISTER = "$PACKAGE_NAME.REGISTER"
         const val ACTION_IDENTIFY = "$PACKAGE_NAME.IDENTIFY"
         const val ACTION_VERIFY = "$PACKAGE_NAME.VERIFY"
+        const val ACTION_CONFIRM_IDENTITY = "$PACKAGE_NAME.CONFIRM_IDENTITY"
     }
 
     override fun start() = when (action) {
         ACTION_REGISTER -> view.requestRegisterCallout()
         ACTION_IDENTIFY -> view.requestIdentifyCallout()
         ACTION_VERIFY -> view.requestVerifyCallout()
+        ACTION_CONFIRM_IDENTITY -> view.requestConfirmIdentityCallout()
         else -> view.returnActionErrorToClient()
     }
 

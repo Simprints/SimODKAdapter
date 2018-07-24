@@ -19,6 +19,8 @@ interface MainContract {
 
         fun requestVerifyCallout()
 
+        fun requestConfirmIdentityCallout()
+
         fun returnRegistration(registrationId: String)
 
         fun returnIdentification(idList: String, confidenceList: String, tierList: String, sessionId: String)

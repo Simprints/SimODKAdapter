@@ -4,6 +4,7 @@ import com.simprints.libsimprints.Identification
 import com.simprints.libsimprints.Registration
 import com.simprints.libsimprints.Tier
 import com.simprints.libsimprints.Verification
+import com.simprints.simodkadapter.activities.main.MainPresenter.Companion.ACTION_CONFIRM_IDENTITY
 import com.simprints.simodkadapter.activities.main.MainPresenter.Companion.ACTION_IDENTIFY
 import com.simprints.simodkadapter.activities.main.MainPresenter.Companion.ACTION_REGISTER
 import com.simprints.simodkadapter.activities.main.MainPresenter.Companion.ACTION_VERIFY
@@ -85,6 +86,12 @@ class MainPresenterTest {
     fun processReturnError_ShouldCallActionError() {
         MainPresenter(view, "").processReturnError()
         Mockito.verify(view, times(1)).returnActionErrorToClient()
+    }
+
+    @Test
+    fun startPresenterForConfirmIdentity_ShouldRequestConfirmIdentity() {
+        MainPresenter(view, ACTION_CONFIRM_IDENTITY).apply { start() }
+        Mockito.verify(view, times(1)).requestConfirmIdentityCallout()
     }
 
 }

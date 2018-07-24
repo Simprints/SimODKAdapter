@@ -21,6 +21,7 @@
                 <action android:name="com.simprints.simodkadapter.IDENTIFY" />
                 <action android:name="com.simprints.simodkadapter.UPDATE" />
                 <action android:name="com.simprints.simodkadapter.VERIFY" />
+                <action android:name="com.simprints.simodkadapter.CONFIRM_IDENTITY" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -31,6 +32,7 @@
                 <action android:name="com.simprints.simodkadapter.IDENTIFY" />
                 <action android:name="com.simprints.simodkadapter.UPDATE" />
                 <action android:name="com.simprints.simodkadapter.VERIFY" />
+                <action android:name="com.simprints.simodkadapter.CONFIRM_IDENTITY" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
