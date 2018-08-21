@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.simprints.libsimprints.Constants
 import com.simprints.libsimprints.Constants.*
 import com.simprints.libsimprints.Identification
 
@@ -50,7 +51,11 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     }
 
     override fun requestConfirmIdentityCallout() {
-        startService(Intent(SIMPRINTS_SELECT_GUID_INTENT).apply { putExtras(intent) })
+        startService(Intent(SIMPRINTS_SELECT_GUID_INTENT).apply {
+            putExtras(intent)
+            setPackage(Constants.SIMPRINTS_PACKAGE_NAME)
+        })
+        finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
