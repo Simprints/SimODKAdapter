@@ -9,7 +9,7 @@ import com.simprints.simodkadapter.extensions.getTiersString
 
 
 class MainPresenter(private val view: MainContract.View,
-                    private val action: String) : MainContract.Presenter {
+                    private val action: String?) : MainContract.Presenter {
 
     companion object {
         private const val PACKAGE_NAME = "com.simprints.simodkadapter"

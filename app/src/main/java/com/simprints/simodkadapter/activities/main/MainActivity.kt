@@ -3,7 +3,7 @@ package com.simprints.simodkadapter.activities.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.simprints.libsimprints.Constants
 import com.simprints.libsimprints.Constants.*
 import com.simprints.libsimprints.Identification
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode != Activity.RESULT_OK || data == null)
-            setResult(resultCode, data).let { finish() }
+            setResult(resultCode, data).also { finish() }
         else
             when (requestCode) {
                 REGISTER_REQUEST_CODE -> presenter.processRegistration(
