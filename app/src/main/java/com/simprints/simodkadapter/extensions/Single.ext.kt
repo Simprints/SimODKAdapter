@@ -1,12 +1,12 @@
 package com.simprints.simodkadapter.extensions
 
 import androidx.lifecycle.MutableLiveData
-import com.simprints.simodkadapter.events.Single
+import com.simprints.simodkadapter.events.Event
 
-fun MutableLiveData<Single>.set() {
-    this.value = Single()
+fun MutableLiveData<Event>.set() {
+    this.value = Event()
 }
 
-fun MutableLiveData<Single>.post() {
-    this.postValue(Single())
+fun MutableLiveData<Event>.post() {
+    this.postValue(Event())
 }

@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import com.simprints.libsimprints.Identification
 import com.simprints.libsimprints.Registration
 import com.simprints.libsimprints.Verification
+import com.simprints.simodkadapter.events.DataEvent
 import com.simprints.simodkadapter.events.Event
-import com.simprints.simodkadapter.events.Single
 import com.simprints.simodkadapter.extensions.getConfidencesString
 import com.simprints.simodkadapter.extensions.getIdsString
 import com.simprints.simodkadapter.extensions.getTiersString
@@ -23,15 +23,15 @@ class MainViewModel(private val action: String?) : ViewModel(), MainContract.Vie
         const val ACTION_CONFIRM_IDENTITY = "$PACKAGE_NAME.CONFIRM_IDENTITY"
     }
 
-    override val requestRegisterCallout = MutableLiveData<Single>()
-    override val requestIdentifyCallout = MutableLiveData<Single>()
-    override val requestVerifyCallout = MutableLiveData<Single>()
-    override val requestConfirmIdentityCallout = MutableLiveData<Single>()
-    override val returnActionErrorToClient = MutableLiveData<Single>()
+    override val requestRegisterCallout = MutableLiveData<Event>()
+    override val requestIdentifyCallout = MutableLiveData<Event>()
+    override val requestVerifyCallout = MutableLiveData<Event>()
+    override val requestConfirmIdentityCallout = MutableLiveData<Event>()
+    override val returnActionErrorToClient = MutableLiveData<Event>()
 
-    override val returnRegistration = MutableLiveData<Event<String>>()
-    override val returnIdentification = MutableLiveData<Event<ReturnIdentification>>()
-    override val returnVerification = MutableLiveData<Event<ReturnVerification>>()
+    override val returnRegistration = MutableLiveData<DataEvent<String>>()
+    override val returnIdentification = MutableLiveData<DataEvent<ReturnIdentification>>()
+    override val returnVerification = MutableLiveData<DataEvent<ReturnVerification>>()
 
     override fun start() = when (action) {
         ACTION_REGISTER -> requestRegisterCallout.set()

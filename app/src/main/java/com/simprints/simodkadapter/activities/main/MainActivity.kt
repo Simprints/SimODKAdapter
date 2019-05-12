@@ -7,8 +7,8 @@ import com.crashlytics.android.Crashlytics
 import com.simprints.libsimprints.Constants.*
 import com.simprints.libsimprints.Identification
 import com.simprints.simodkadapter.R
+import com.simprints.simodkadapter.events.DataEventObserver
 import com.simprints.simodkadapter.events.EventObserver
-import com.simprints.simodkadapter.events.SingleObserver
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
@@ -33,17 +33,17 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.requestRegisterCallout.observe(this, SingleObserver { requestRegisterCallout() })
-        viewModel.requestIdentifyCallout.observe(this, SingleObserver { requestIdentifyCallout() })
-        viewModel.requestVerifyCallout.observe(this, SingleObserver { requestVerifyCallout() })
-        viewModel.requestConfirmIdentityCallout.observe(this, SingleObserver { requestConfirmIdentityCallout() })
-        viewModel.returnActionErrorToClient.observe(this, SingleObserver { returnActionErrorToClient() })
+        viewModel.requestRegisterCallout.observe(this, EventObserver { requestRegisterCallout() })
+        viewModel.requestIdentifyCallout.observe(this, EventObserver { requestIdentifyCallout() })
+        viewModel.requestVerifyCallout.observe(this, EventObserver { requestVerifyCallout() })
+        viewModel.requestConfirmIdentityCallout.observe(this, EventObserver { requestConfirmIdentityCallout() })
+        viewModel.returnActionErrorToClient.observe(this, EventObserver { returnActionErrorToClient() })
 
-        viewModel.returnRegistration.observe(this, EventObserver { returnRegistration(it) })
-        viewModel.returnIdentification.observe(this, EventObserver {
+        viewModel.returnRegistration.observe(this, DataEventObserver { returnRegistration(it) })
+        viewModel.returnIdentification.observe(this, DataEventObserver {
             returnIdentification(it.idList, it.confidenceList, it.tierList, it.sessionId)
         })
-        viewModel.returnVerification.observe(this, EventObserver {
+        viewModel.returnVerification.observe(this, DataEventObserver {
             returnVerification(it.id, it.confidence, it.tier)
         })
     }

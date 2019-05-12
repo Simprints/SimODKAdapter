@@ -12,8 +12,8 @@ import com.simprints.simodkadapter.activities.main.MainViewModel.Companion.ACTIO
 import com.simprints.simodkadapter.activities.main.MainViewModel.Companion.ACTION_VERIFY
 import com.simprints.simodkadapter.activities.main.MainViewModel.ReturnIdentification
 import com.simprints.simodkadapter.activities.main.MainViewModel.ReturnVerification
-import com.simprints.simodkadapter.events.EventObserver
-import com.simprints.simodkadapter.events.Single
+import com.simprints.simodkadapter.events.DataEventObserver
+import com.simprints.simodkadapter.events.Event
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -37,48 +37,48 @@ class MainViewModelTest {
     var rule: TestRule = InstantTaskExecutorRule()
 
     @Mock
-    lateinit var singleObserver: Observer<Single>
+    lateinit var eventObserver: Observer<Event>
 
     @Test
     fun startPresenterForRegister_ShouldRequestRegister() {
         MainViewModel(ACTION_REGISTER).apply {
             start()
-            requestRegisterCallout.observeForever(singleObserver)
+            requestRegisterCallout.observeForever(eventObserver)
         }
-        verify(singleObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Single::class.java))
+        verify(eventObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Event::class.java))
     }
 
     @Test
     fun startPresenterForIdentify_ShouldRequestIdentify() {
         MainViewModel(ACTION_IDENTIFY).apply {
             start()
-            requestIdentifyCallout.observeForever(singleObserver)
+            requestIdentifyCallout.observeForever(eventObserver)
         }
-        verify(singleObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Single::class.java))
+        verify(eventObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Event::class.java))
     }
 
     @Test
     fun startPresenterForVerify_ShouldRequestVerify() {
         MainViewModel(ACTION_VERIFY).apply {
             start()
-            requestVerifyCallout.observeForever(singleObserver)
+            requestVerifyCallout.observeForever(eventObserver)
         }
-        verify(singleObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Single::class.java))
+        verify(eventObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Event::class.java))
     }
 
     @Test
     fun startPresenterWithGarbage_ShouldReturnActionError() {
         MainViewModel(ACTION_CONFIRM_IDENTITY).apply {
             start()
-            requestConfirmIdentityCallout.observeForever(singleObserver)
+            requestConfirmIdentityCallout.observeForever(eventObserver)
         }
-        verify(singleObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Single::class.java))
+        verify(eventObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Event::class.java))
     }
 
     @Test
     fun processRegistration_ShouldReturnValidOdkRegistration() {
         val registration = Registration(UUID.randomUUID().toString())
-        val ob: EventObserver<String> = Mockito.spy(EventObserver {
+        val ob: DataEventObserver<String> = Mockito.spy(DataEventObserver {
             assert(it == registration.guid)
         })
 
@@ -94,7 +94,7 @@ class MainViewModelTest {
         val id2 = Identification(UUID.randomUUID().toString(), 15, Tier.TIER_5)
         val sessionId = UUID.randomUUID().toString()
 
-        val ob: EventObserver<ReturnIdentification> = Mockito.spy(EventObserver {
+        val ob: DataEventObserver<ReturnIdentification> = Mockito.spy(DataEventObserver {
             assert(it.idList == "${id1.guid} ${id2.guid}")
             assert(it.confidenceList == "${id1.confidence} ${id2.confidence}")
             assert(it.tierList == "${id1.tier} ${id2.tier}")
@@ -111,7 +111,7 @@ class MainViewModelTest {
     fun processVerification_ShouldReturnValidOdkVerification() {
         val verification = Verification(100, Tier.TIER_1, UUID.randomUUID().toString())
 
-        val ob: EventObserver<ReturnVerification> = Mockito.spy(EventObserver {
+        val ob: DataEventObserver<ReturnVerification> = Mockito.spy(DataEventObserver {
             assert(it.id == verification.guid)
             assert(it.confidence == verification.confidence.toString())
             assert(it.tier == verification.tier.toString())
@@ -127,18 +127,18 @@ class MainViewModelTest {
     fun processReturnError_ShouldCallActionError() {
         MainViewModel("").apply {
             start()
-            returnActionErrorToClient.observeForever(singleObserver)
+            returnActionErrorToClient.observeForever(eventObserver)
         }
-        verify(singleObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Single::class.java))
+        verify(eventObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Event::class.java))
     }
 
     @Test
     fun startPresenterForConfirmIdentity_ShouldRequestConfirmIdentity() {
         MainViewModel(ACTION_CONFIRM_IDENTITY).apply {
             start()
-            requestConfirmIdentityCallout.observeForever(singleObserver)
+            requestConfirmIdentityCallout.observeForever(eventObserver)
         }
-        verify(singleObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Single::class.java))
+        verify(eventObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Event::class.java))
     }
 
 }
