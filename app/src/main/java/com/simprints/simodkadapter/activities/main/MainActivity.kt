@@ -1,12 +1,18 @@
 package com.simprints.simodkadapter.activities.main
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.simprints.libsimprints.Constants
+import com.crashlytics.android.Crashlytics
 import com.simprints.libsimprints.Constants.*
 import com.simprints.libsimprints.Identification
+import com.simprints.simodkadapter.R
+import com.simprints.simodkadapter.events.EventObserver
+import com.simprints.simodkadapter.events.SingleObserver
+import org.jetbrains.anko.toast
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
+
 
 class MainActivity : AppCompatActivity(), MainContract.View {
 
@@ -22,69 +28,90 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         private const val ODK_SESSION_ID = "odk-session-id"
     }
 
-    override lateinit var presenter: MainContract.Presenter
+    override val viewModel: MainContract.ViewModel by inject { parametersOf(intent.action) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        presenter = MainPresenter(this, intent.action).apply { start() }
+        viewModel.requestRegisterCallout.observe(this, SingleObserver { requestRegisterCallout() })
+        viewModel.requestIdentifyCallout.observe(this, SingleObserver { requestIdentifyCallout() })
+        viewModel.requestVerifyCallout.observe(this, SingleObserver { requestVerifyCallout() })
+        viewModel.requestConfirmIdentityCallout.observe(this, SingleObserver { requestConfirmIdentityCallout() })
+        viewModel.returnActionErrorToClient.observe(this, SingleObserver { returnActionErrorToClient() })
+
+        viewModel.returnRegistration.observe(this, EventObserver { returnRegistration(it) })
+        viewModel.returnIdentification.observe(this, EventObserver {
+            returnIdentification(it.idList, it.confidenceList, it.tierList, it.sessionId)
+        })
+        viewModel.returnVerification.observe(this, EventObserver {
+            returnVerification(it.id, it.confidence, it.tier)
+        })
     }
 
-    override fun returnActionErrorToClient() {
+    private fun returnActionErrorToClient() {
         setResult(SIMPRINTS_INVALID_INTENT_ACTION, intent)
         finish()
     }
 
-    override fun requestRegisterCallout() {
+    private fun requestRegisterCallout() {
         val registerIntent = Intent(SIMPRINTS_REGISTER_INTENT).apply { putExtras(intent) }
         startActivityForResult(registerIntent, REGISTER_REQUEST_CODE)
     }
 
-    override fun requestIdentifyCallout() {
+    private fun requestIdentifyCallout() {
         val identifyIntent = Intent(SIMPRINTS_IDENTIFY_INTENT).apply { putExtras(intent) }
         startActivityForResult(identifyIntent, IDENTIFY_REQUEST_CODE)
     }
 
-    override fun requestVerifyCallout() {
+    private fun requestVerifyCallout() {
         val verifyIntent = Intent(SIMPRINTS_VERIFY_INTENT).apply { putExtras(intent) }
         startActivityForResult(verifyIntent, VERIFY_REQUEST_CODE)
     }
 
-    override fun requestConfirmIdentityCallout() {
-        startService(Intent(SIMPRINTS_SELECT_GUID_INTENT).apply {
-            putExtras(intent)
-            setPackage(Constants.SIMPRINTS_PACKAGE_NAME)
-        })
+    private fun requestConfirmIdentityCallout() {
+        try {
+            startService(Intent(SIMPRINTS_SELECT_GUID_INTENT).apply {
+                putExtras(intent)
+                setPackage(SIMPRINTS_PACKAGE_NAME)
+            })
+        } catch (ex: Exception) {
+            Crashlytics.logException(ex)
+            toast(getString(R.string.failed_confirmation))
+        }
+        setResult(RESULT_OK)
         finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode != Activity.RESULT_OK || data == null)
+        if (resultCode != RESULT_OK || data == null)
             setResult(resultCode, data).also { finish() }
         else
             when (requestCode) {
-                REGISTER_REQUEST_CODE -> presenter.processRegistration(
+                REGISTER_REQUEST_CODE -> viewModel.processRegistration(
                         data.getParcelableExtra(SIMPRINTS_REGISTRATION)
                 )
-                IDENTIFY_REQUEST_CODE -> presenter.processIdentification(
+                IDENTIFY_REQUEST_CODE -> viewModel.processIdentification(
                         data.getParcelableArrayListExtra<Identification>(SIMPRINTS_IDENTIFICATIONS),
                         data.getStringExtra(SIMPRINTS_SESSION_ID)
                 )
-                VERIFY_REQUEST_CODE -> presenter.processVerification(
+                VERIFY_REQUEST_CODE -> viewModel.processVerification(
                         data.getParcelableExtra(SIMPRINTS_VERIFICATION)
                 )
-                else -> presenter.processReturnError()
+                else -> viewModel.processReturnError()
             }
     }
 
-    override fun returnRegistration(registrationId: String) = Intent().let {
+    private fun returnRegistration(registrationId: String) = Intent().let {
         it.putExtra(ODK_REGISTRATION_ID_KEY, registrationId)
         sendOkResult(it)
     }
 
-    override fun returnIdentification(idList: String, confidenceList: String, tierList: String, sessionId: String) =
+    private fun returnIdentification(idList: String,
+                                     confidenceList: String,
+                                     tierList: String,
+                                     sessionId: String) =
             Intent().let {
                 it.putExtra(ODK_GUIDS_KEY, idList)
                 it.putExtra(ODK_CONFIDENCES_KEY, confidenceList)
@@ -93,7 +120,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
                 sendOkResult(it)
             }
 
-    override fun returnVerification(id: String, confidence: String, tier: String) =
+    private fun returnVerification(id: String, confidence: String, tier: String) =
             Intent().let {
                 it.putExtra(ODK_GUIDS_KEY, id)
                 it.putExtra(ODK_CONFIDENCES_KEY, confidence)
@@ -102,7 +129,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
             }
 
     private fun sendOkResult(intent: Intent) {
-        setResult(Activity.RESULT_OK, intent)
+        setResult(RESULT_OK, intent)
         finish()
     }
 

@@ -4,15 +4,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.simprints.simodkadapter.R
 
-class HomeActivity : AppCompatActivity(), HomeContract.View {
 
-    override lateinit var presenter: HomeContract.Presenter
+class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-
-        presenter = HomePresenter(this).apply { start() }
     }
 
 }

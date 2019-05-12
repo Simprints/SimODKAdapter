@@ -1,7 +1,7 @@
 package com.simprints.simodkadapter
 
 
-interface BasePresenter {
+interface ViewModel {
 
     fun start()
 
