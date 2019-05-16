@@ -7,13 +7,10 @@ import com.simprints.libsimprints.Registration
 import com.simprints.libsimprints.Verification
 import com.simprints.simodkadapter.events.DataEvent
 import com.simprints.simodkadapter.events.Event
-import com.simprints.simodkadapter.extensions.getConfidencesString
-import com.simprints.simodkadapter.extensions.getIdsString
-import com.simprints.simodkadapter.extensions.getTiersString
-import com.simprints.simodkadapter.extensions.set
+import com.simprints.simodkadapter.extensions.*
 
 
-class MainViewModel(private val action: String?) : ViewModel(), MainContract.ViewModel {
+class MainViewModel : ViewModel(), MainContract.ViewModel {
 
     companion object {
         private const val PACKAGE_NAME = "com.simprints.simodkadapter"
@@ -33,11 +30,11 @@ class MainViewModel(private val action: String?) : ViewModel(), MainContract.Vie
     override val returnIdentification = MutableLiveData<DataEvent<ReturnIdentification>>()
     override val returnVerification = MutableLiveData<DataEvent<ReturnVerification>>()
 
-    override fun start() = when (action) {
+    override fun start(action: String?) = when (action) {
         ACTION_REGISTER -> requestRegisterCallout.set()
         ACTION_IDENTIFY -> requestIdentifyCallout.set()
         ACTION_VERIFY -> requestVerifyCallout.set()
-        ACTION_CONFIRM_IDENTITY -> requestConfirmIdentityCallout.set()
+        ACTION_CONFIRM_IDENTITY -> requestConfirmIdentityCallout.post()
         else -> returnActionErrorToClient.set()
     }
 

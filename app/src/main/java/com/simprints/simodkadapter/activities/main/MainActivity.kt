@@ -1,17 +1,17 @@
 package com.simprints.simodkadapter.activities.main
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
 import com.simprints.libsimprints.Constants.*
 import com.simprints.libsimprints.Identification
-import com.simprints.simodkadapter.R
+import com.simprints.simodkadapter.R.string.failed_confirmation
 import com.simprints.simodkadapter.events.DataEventObserver
 import com.simprints.simodkadapter.events.EventObserver
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.inject
-import org.koin.core.parameter.parametersOf
 
 
 class MainActivity : AppCompatActivity(), MainContract.View {
@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         private const val ODK_SESSION_ID = "odk-session-id"
     }
 
-    override val viewModel: MainContract.ViewModel by inject { parametersOf(intent.action) }
+    override val viewModel: MainViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +46,8 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         viewModel.returnVerification.observe(this, DataEventObserver {
             returnVerification(it.id, it.confidence, it.tier)
         })
+
+        viewModel.start(intent.action)
     }
 
     private fun returnActionErrorToClient() {
@@ -70,13 +72,14 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     private fun requestConfirmIdentityCallout() {
         try {
-            startService(Intent(SIMPRINTS_SELECT_GUID_INTENT).apply {
+            Intent(SIMPRINTS_SELECT_GUID_INTENT).apply {
                 putExtras(intent)
                 setPackage(SIMPRINTS_PACKAGE_NAME)
-            })
+                sendService(this)
+            }
         } catch (ex: Exception) {
             Crashlytics.logException(ex)
-            toast(getString(R.string.failed_confirmation))
+            toast(getString(failed_confirmation))
         }
         setResult(RESULT_OK)
         finish()
@@ -111,26 +114,29 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     private fun returnIdentification(idList: String,
                                      confidenceList: String,
                                      tierList: String,
-                                     sessionId: String) =
-            Intent().let {
-                it.putExtra(ODK_GUIDS_KEY, idList)
-                it.putExtra(ODK_CONFIDENCES_KEY, confidenceList)
-                it.putExtra(ODK_TIERS_KEY, tierList)
-                it.putExtra(ODK_SESSION_ID, sessionId)
-                sendOkResult(it)
-            }
+                                     sessionId: String) = Intent().let {
+        it.putExtra(ODK_GUIDS_KEY, idList)
+        it.putExtra(ODK_CONFIDENCES_KEY, confidenceList)
+        it.putExtra(ODK_TIERS_KEY, tierList)
+        it.putExtra(ODK_SESSION_ID, sessionId)
+        sendOkResult(it)
+    }
 
-    private fun returnVerification(id: String, confidence: String, tier: String) =
-            Intent().let {
-                it.putExtra(ODK_GUIDS_KEY, id)
-                it.putExtra(ODK_CONFIDENCES_KEY, confidence)
-                it.putExtra(ODK_TIERS_KEY, tier)
-                sendOkResult(it)
-            }
+    private fun returnVerification(id: String, confidence: String, tier: String) = Intent().let {
+        it.putExtra(ODK_GUIDS_KEY, id)
+        it.putExtra(ODK_CONFIDENCES_KEY, confidence)
+        it.putExtra(ODK_TIERS_KEY, tier)
+        sendOkResult(it)
+    }
 
     private fun sendOkResult(intent: Intent) {
         setResult(RESULT_OK, intent)
         finish()
     }
+
+    private fun sendService(intent: Intent) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        startForegroundService(intent)
+    else
+        startService(intent)
 
 }

@@ -11,25 +11,7 @@ import com.simprints.simodkadapter.events.Event
 
 interface MainContract {
 
-    interface View : BaseView<ViewModel> {
-
-//        fun returnActionErrorToClient()
-//
-//        fun requestRegisterCallout()
-//
-//        fun requestIdentifyCallout()
-//
-//        fun requestVerifyCallout()
-//
-//        fun requestConfirmIdentityCallout()
-//
-//        fun returnRegistration(registrationId: String)
-//
-//        fun returnIdentification(idList: String, confidenceList: String, tierList: String, sessionId: String)
-//
-//        fun returnVerification(id: String, confidence: String, tier: String)
-
-    }
+    interface View : BaseView<ViewModel>
 
     interface ViewModel : com.simprints.simodkadapter.ViewModel {
 
@@ -42,6 +24,8 @@ interface MainContract {
         val returnRegistration: MutableLiveData<DataEvent<String>>
         val returnIdentification: MutableLiveData<DataEvent<MainViewModel.ReturnIdentification>>
         val returnVerification: MutableLiveData<DataEvent<MainViewModel.ReturnVerification>>
+
+        fun start(action: String?)
 
         fun processRegistration(registration: Registration)
 
