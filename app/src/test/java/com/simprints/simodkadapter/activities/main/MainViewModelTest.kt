@@ -41,8 +41,8 @@ class MainViewModelTest {
 
     @Test
     fun startPresenterForRegister_ShouldRequestRegister() {
-        MainViewModel(ACTION_REGISTER).apply {
-            start()
+        MainViewModel().apply {
+            start(ACTION_REGISTER)
             requestRegisterCallout.observeForever(eventObserver)
         }
         verify(eventObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Event::class.java))
@@ -50,8 +50,8 @@ class MainViewModelTest {
 
     @Test
     fun startPresenterForIdentify_ShouldRequestIdentify() {
-        MainViewModel(ACTION_IDENTIFY).apply {
-            start()
+        MainViewModel().apply {
+            start(ACTION_IDENTIFY)
             requestIdentifyCallout.observeForever(eventObserver)
         }
         verify(eventObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Event::class.java))
@@ -59,8 +59,8 @@ class MainViewModelTest {
 
     @Test
     fun startPresenterForVerify_ShouldRequestVerify() {
-        MainViewModel(ACTION_VERIFY).apply {
-            start()
+        MainViewModel().apply {
+            start(ACTION_VERIFY)
             requestVerifyCallout.observeForever(eventObserver)
         }
         verify(eventObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Event::class.java))
@@ -68,8 +68,8 @@ class MainViewModelTest {
 
     @Test
     fun startPresenterWithGarbage_ShouldReturnActionError() {
-        MainViewModel(ACTION_CONFIRM_IDENTITY).apply {
-            start()
+        MainViewModel().apply {
+            start(ACTION_CONFIRM_IDENTITY)
             requestConfirmIdentityCallout.observeForever(eventObserver)
         }
         verify(eventObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Event::class.java))
@@ -82,7 +82,7 @@ class MainViewModelTest {
             assert(it == registration.guid)
         })
 
-        MainViewModel(ACTION_REGISTER).apply {
+        MainViewModel().apply {
             processRegistration(registration)
             returnRegistration.observeForever(ob)
         }
@@ -101,7 +101,7 @@ class MainViewModelTest {
             assert(it.sessionId == sessionId)
         })
 
-        MainViewModel(ACTION_IDENTIFY).apply {
+        MainViewModel().apply {
             processIdentification(arrayListOf(id1, id2), sessionId)
             returnIdentification.observeForever(ob)
         }
@@ -117,7 +117,7 @@ class MainViewModelTest {
             assert(it.tier == verification.tier.toString())
         })
 
-        MainViewModel(ACTION_VERIFY).apply {
+        MainViewModel().apply {
             processVerification(verification)
             returnVerification.observeForever(ob)
         }
@@ -125,8 +125,8 @@ class MainViewModelTest {
 
     @Test
     fun processReturnError_ShouldCallActionError() {
-        MainViewModel("").apply {
-            start()
+        MainViewModel().apply {
+            start("")
             returnActionErrorToClient.observeForever(eventObserver)
         }
         verify(eventObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Event::class.java))
@@ -134,8 +134,8 @@ class MainViewModelTest {
 
     @Test
     fun startPresenterForConfirmIdentity_ShouldRequestConfirmIdentity() {
-        MainViewModel(ACTION_CONFIRM_IDENTITY).apply {
-            start()
+        MainViewModel().apply {
+            start(ACTION_CONFIRM_IDENTITY)
             requestConfirmIdentityCallout.observeForever(eventObserver)
         }
         verify(eventObserver, Mockito.times(SINGLE_INVOCATION)).onChanged(isA(Event::class.java))
